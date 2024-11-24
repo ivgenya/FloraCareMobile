@@ -13,13 +13,16 @@ import {fetchUserInfo} from '../api/authQueries';
 
 const AccountScreen = ({navigation}) => {
   const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       const user = await fetchUserInfo();
       setUserInfo(user);
     };
     fetchData();
+    setLoading(false);
   }, []);
 
   const signOut = async () => {
@@ -35,13 +38,7 @@ const AccountScreen = ({navigation}) => {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#ffffff',
-      }}>
+    <View style={styles.container}>
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -60,7 +57,6 @@ const AccountScreen = ({navigation}) => {
                 }
                 style={styles.profileImage}
               />
-
               <Text style={styles.greeting}>
                 {userInfo.username || 'Username'}
               </Text>
@@ -70,12 +66,19 @@ const AccountScreen = ({navigation}) => {
           )}
         </>
       )}
+      <View style={{marginTop: 20}}>
+        <Button
+          title="Открыть документацию"
+          onPress={() => navigation.navigate('Документация')}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ffffff',

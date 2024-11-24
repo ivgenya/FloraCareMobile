@@ -12,6 +12,7 @@ import ViewRoomScreen from '../screens/ViewRoomScreen';
 import AddPlantScreen from '../screens/AddPlantScreen';
 import WateringCalenderScreen from '../screens/WateringCalenderScreen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import DocumentationDrawer from '../screens/DocumentationDrawer';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -115,6 +116,11 @@ function AppNavigator() {
           name="AddPlantScreen"
           component={AddPlantScreen}
           options={{title: 'Добавить растение'}}
+        />
+        <Stack.Screen
+          name="Документация"
+          component={DocumentationDrawer}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>
