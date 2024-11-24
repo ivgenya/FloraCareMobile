@@ -1,2 +1,2 @@
-- [Главная](index.md)
+- [Главная](README.md)
 - [Авторизация](authorization/authorization.md)
