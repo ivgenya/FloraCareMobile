@@ -1,7 +1,5 @@
 - [Главная](/)
-- Авторизация
 - [Авторизация](authorization/authorization.md)
-- Пользовательское руководство
-    - [Добавление комнат](creating-your-home/creating-room.md)
-    - [Добавление растений](creating-your-home/creating-plants.md)
-    - [Добавление устройств](creating-your-home/adding-devices.md)
+- [Добавление комнат](creating-your-home/creating-room.md)
+- [Добавление растений](creating-your-home/creating-plants.md)
+- [Добавление устройств](creating-your-home/adding-devices.md)
