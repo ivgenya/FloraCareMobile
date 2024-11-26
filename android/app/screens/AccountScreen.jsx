@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Button,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
@@ -66,12 +67,11 @@ const AccountScreen = ({navigation}) => {
           )}
         </>
       )}
-      <View style={{marginTop: 20}}>
-        <Button
-          title="Открыть документацию"
-          onPress={() => navigation.navigate('Документация')}
-        />
-      </View>
+      <TouchableOpacity
+        style={styles.transparentButton}
+        onPress={() => navigation.navigate('Документация')}>
+        <Text style={styles.buttonText}>Открыть документацию</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -92,6 +92,21 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  transparentButton: {
+    backgroundColor: 'transparent',
+    color: '#666',
+    marginBottom: 15,
+    width: 300,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#666',
+    fontSize: 18,
+    fontWeight: '400',
+    textAlign: 'center',
   },
 });
 

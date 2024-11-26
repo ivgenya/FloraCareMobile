@@ -5,10 +5,13 @@ import {
   ActivityIndicator,
   View,
   Alert,
+  Image,
+  Text,
+  TouchableOpacity,
 } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 
-const DocumentationScreen = ({route}) => {
+const DocumentationScreen = ({navigation, route}) => {
   const [markdownContent, setMarkdownContent] = useState('');
   const fileUrl = route.params.fileUrl;
   const [loading, setLoading] = useState(false);
@@ -21,7 +24,8 @@ const DocumentationScreen = ({route}) => {
         throw new Error(`Failed to fetch documentation: ${response.status}`);
       }
       const content = await response.text();
-      setMarkdownContent(content);
+      const processedContent = processCheckboxes(content);
+      setMarkdownContent(processedContent);
     } catch (error) {
       console.error('Error loading Markdown:', error);
       Alert.alert(
@@ -31,6 +35,24 @@ const DocumentationScreen = ({route}) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const processCheckboxes = markdown => {
+    return markdown
+      .replace(/^\s*-\s*\[x\]\s+/gm, '✔️ ')
+      .replace(/^\s*-\s*\[ \]\s+/gm, '❌ ');
+  };
+
+  const customRenderers = {
+    image: props => {
+      const {src} = props;
+      return (
+        <Image
+          source={{uri: src}}
+          style={{width: 200, height: 200, marginBottom: 10}}
+        />
+      );
+    },
   };
 
   useEffect(() => {
@@ -50,7 +72,12 @@ const DocumentationScreen = ({route}) => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Markdown>{markdownContent}</Markdown>
+        <Markdown renderers={customRenderers}>{markdownContent}</Markdown>
+        <TouchableOpacity
+          style={styles.transparentButton}
+          onPress={() => navigation.navigate('Home')}>
+          <Text style={styles.buttonText}>Вернуться в дом</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -64,11 +91,28 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingBottom: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  transparentButton: {
+    backgroundColor: 'transparent',
+    color: '#666',
+    marginBottom: 15,
+    width: 300,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#666',
+    fontSize: 18,
+    fontWeight: '400',
+    textAlign: 'center',
   },
 });
 
