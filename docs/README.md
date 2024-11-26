@@ -9,11 +9,8 @@ FloraCare — это приложение для ухода за комнатн�
 - [ ] Подключение нескольких датчиков в одной комнате
 - [ ] Интеграция с другими умными устройствами для умного дома
 
-![Изображение](https://via.placeholder.com/150)
-![Изображение](https://via.placeholder.com/150)
-![GitHub Logo](https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png)
-![Random Unsplash](https://source.unsplash.com/random/400x300)
-[![Изображение](https://via.placeholder.com/150)](https://example.com/)
-[![LYWSD03MMC](../images/device.jpg)](https://www.wildberries.ru/catalog/179929368/detail.aspx)
-[Ссылка](https://ispi.cdo.vlsu.ru/mod/folder/view.php?id=44323)
+Для получения дополнительной информации или если у вас возникли вопросы, свяжитесь с нами по электронной почте: [evgeniyamalinina0707@gmail.com](mailto:evgeniyamalinina0707@gmail.com).
+
+![Комнатные растения](https://mir-s3-cdn-cf.behance.net/project_modules/2800_opt_1/f8e1e378726487.5cad4931821d8.jpg)
+
 
