@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -16,7 +16,7 @@ const DocumentationScreen = ({navigation, route}) => {
   const fileUrl = route.params.fileUrl;
   const [loading, setLoading] = useState(false);
 
-  const loadMarkdown = async url => {
+  const loadMarkdown = useCallback(async url => {
     setLoading(true);
     try {
       const response = await fetch(url);
@@ -35,7 +35,7 @@ const DocumentationScreen = ({navigation, route}) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const processCheckboxes = markdown => {
     return markdown
@@ -59,7 +59,7 @@ const DocumentationScreen = ({navigation, route}) => {
     if (fileUrl) {
       loadMarkdown(fileUrl);
     }
-  }, [fileUrl]);
+  }, [fileUrl, loadMarkdown]);
 
   if (loading) {
     return (
