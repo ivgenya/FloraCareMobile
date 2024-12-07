@@ -27,7 +27,6 @@ const DocumentationScreen = ({navigation, route}) => {
       const processedContent = processCheckboxes(content);
       setMarkdownContent(processedContent);
     } catch (error) {
-      console.error('Error loading Markdown:', error);
       Alert.alert(
         'Ошибка',
         'Не удалось загрузить документацию. Пожалуйста, попробуйте позже.',
@@ -75,7 +74,7 @@ const DocumentationScreen = ({navigation, route}) => {
         <Markdown renderers={customRenderers}>{markdownContent}</Markdown>
         <TouchableOpacity
           style={styles.transparentButton}
-          onPress={() => navigation.navigate('Home')}>
+          onPress={() => navigation.replace('Home')}>
           <Text style={styles.buttonText}>Вернуться в дом</Text>
         </TouchableOpacity>
       </ScrollView>
