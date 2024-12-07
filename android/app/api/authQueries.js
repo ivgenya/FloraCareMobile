@@ -13,7 +13,6 @@ export const sendTokenToServer = async idToken => {
     const data = await response.json();
 
     if (response.ok) {
-      console.log('Authentication successful:', data);
       await AsyncStorage.setItem('googleToken', idToken);
       await AsyncStorage.setItem('authToken', data.authToken);
       return true;
@@ -65,10 +64,7 @@ export const login = async (email, password) => {
     if (!response.ok) {
       throw new Error(data.message || 'Login failed');
     }
-
     await AsyncStorage.setItem('authToken', data.authToken);
-
-    console.log('Login successful:', data);
     return true;
   } catch (error) {
     console.error('Error during login:', error);
@@ -80,12 +76,9 @@ export const fetchUserInfo = async () => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     if (token === null) {
-      console.log('Token not found');
       throw new Error('Token not found');
     }
-    console.log(token);
-
-    const response = await fetch(BASE_URL + '/auth/me', {
+    const response = await fetch(BASE_URL + '/user/me', {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -95,13 +88,10 @@ export const fetchUserInfo = async () => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Error response:', errorData);
       throw new Error(errorData.message || 'Error fetching user info');
     }
 
-    const data = await response.json();
-    console.log('User info fetched:', data);
-    return data;
+    return await response.json();
   } catch (error) {
     console.error('Error fetching user info:', error);
     throw error;

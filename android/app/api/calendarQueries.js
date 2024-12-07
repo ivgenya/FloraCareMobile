@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BASE_URL} from '../utils/constants';
+import {Alert} from 'react-native';
 
 export const fetchWateringSchedule = async () => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     if (token === null) {
-      console.log('Token not found');
       throw new Error('Token not found');
     }
 
@@ -46,7 +46,6 @@ export const markWatering = async date => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     if (token === null) {
-      console.log('Token not found');
       throw new Error('Token not found');
     }
 
@@ -60,12 +59,11 @@ export const markWatering = async date => {
     });
 
     if (response.ok) {
-      alert('Полив успешно отмечен!');
+      Alert.alert('Отметка полива', 'Полив успешно отмечен');
     } else {
-      alert('Ошибка при отметке полива.');
+      Alert.alert('Ошибка', 'Пожалуйста, заполните все поля');
     }
   } catch (error) {
     console.error(error);
-    alert('Ошибка при отправке запроса.');
   }
 };

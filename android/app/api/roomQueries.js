@@ -50,8 +50,6 @@ export const addRoom = async (roomName, roomImage) => {
       const errorData = await response.text();
       throw new Error(`Error: ${errorData || 'Unknown error'}`);
     }
-
-    return await response; // Возвращаем ответ от сервера
   } catch (error) {
     console.error('Error creating room:', error);
     throw new Error('Error connecting to the server: ' + error.message);
@@ -79,5 +77,99 @@ export const fetchRoomDetails = async roomId => {
     return await response.json();
   } catch (error) {
     throw new Error('Ошибка при подключении к серверу: ' + error.message);
+  }
+};
+
+export const deleteRoom = async roomId => {
+  const token = await AsyncStorage.getItem('authToken');
+  if (!token) {
+    throw new Error('Token not found');
+  }
+  const response = await fetch(BASE_URL + `/room/${roomId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Ошибка удаления комнаты');
+  }
+};
+
+export const linkDeviceToRoom = async (roomId, macAddress, name) => {
+  const token = await AsyncStorage.getItem('authToken');
+  if (!token) {
+    throw new Error('Token not found');
+  }
+
+  const requestBody = {
+    macAddress: macAddress,
+    name: name,
+  };
+
+  const response = await fetch(BASE_URL + `/room/${roomId}/link-device`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to link device to room');
+  }
+
+  return response.json();
+};
+
+export const deleteDevice = async (roomId, deviceId) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    if (!token) {
+      throw new Error('Token not found');
+    }
+    const response = await fetch(
+      BASE_URL + `/room/${roomId}/device/${deviceId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+  } catch (error) {
+    console.error('Error deleting device:', error);
+  }
+};
+
+export const updateRoomName = async (roomId, newName) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    if (!token) {
+      throw new Error('Token not found');
+    }
+    const requestBody = {
+      name: newName,
+    };
+    const response = await fetch(BASE_URL + `/room/${roomId}/update-name`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to update room name');
+    }
+  } catch (error) {
+    console.error('Error in updateRoomName:', error);
+    throw error;
   }
 };
