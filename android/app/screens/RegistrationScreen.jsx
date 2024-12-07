@@ -35,7 +35,7 @@ const RegistrationScreen = ({navigation}) => {
       style={styles.background}>
       <View style={styles.container}>
         <>
-          <Text style={styles.title}>Добро пожаловать!</Text>
+          <Text style={styles.title}>Добро пожаловать в FloraCare!</Text>
           <TextInput
             style={styles.input}
             placeholder="Username"
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 20,
     paddingHorizontal: 10,
-    borderRadius: 30,
+    borderRadius: 10,
     backgroundColor: '#fff',
     paddingLeft: 20,
   },
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(53,77,18, 0.6)',
     color: '#fff',
     marginBottom: 15,
-    borderRadius: 30,
+    borderRadius: 10,
     width: 300,
     height: 60,
     justifyContent: 'center',

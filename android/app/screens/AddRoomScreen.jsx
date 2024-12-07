@@ -7,6 +7,7 @@ import {
   Alert,
   Image,
   TouchableOpacity,
+  ImageBackground,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {addRoom} from '../api/roomQueries';
@@ -46,39 +47,48 @@ const AddRoomScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Создание комнаты</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Название комнаты"
-        value={roomName}
-        onChangeText={setRoomName}
-      />
-      <TouchableOpacity style={styles.transparentButton} onPress={pickImage}>
-        <Text style={styles.buttonText}>Выбрать изображение</Text>
-      </TouchableOpacity>
-      {roomImage && (
-        <Image
-          source={{uri: `data:image/jpeg;base64,${roomImage}`}}
-          style={styles.imagePreview}
+    <ImageBackground
+      source={require('../assets/img/bg_flora.png')}
+      style={styles.background}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Создание комнаты</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Название комнаты"
+          value={roomName}
+          onChangeText={setRoomName}
         />
-      )}
-      <TouchableOpacity
-        onPress={handleAddRoom}
-        disabled={isSubmitEnabled}
-        style={[styles.transparentButton, isSubmitEnabled && {opacity: 0.5}]}>
-        <Text style={styles.buttonText}>Создать</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity style={styles.transparentButton} onPress={pickImage}>
+          <Text style={styles.buttonText}>Выбрать изображение</Text>
+        </TouchableOpacity>
+        {roomImage && (
+          <Image
+            source={{uri: `data:image/jpeg;base64,${roomImage}`}}
+            style={styles.imagePreview}
+          />
+        )}
+        <TouchableOpacity
+          onPress={handleAddRoom}
+          disabled={isSubmitEnabled}
+          style={[styles.transparentButton, isSubmitEnabled && {opacity: 0.5}]}>
+          <Text style={styles.buttonText}>Создать</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
   },
   title: {
     fontSize: 24,
@@ -90,7 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(53,77,18, 0.6)',
     color: '#fff',
     marginBottom: 15,
-    borderRadius: 30,
+    borderRadius: 10,
     width: 300,
     height: 60,
     justifyContent: 'center',
@@ -109,7 +119,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 20,
     paddingHorizontal: 10,
-    borderRadius: 30,
+    borderRadius: 10,
     backgroundColor: '#fff',
     paddingLeft: 20,
   },

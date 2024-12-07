@@ -7,9 +7,6 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
   View,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -41,7 +38,9 @@ const AddPlantScreen = ({navigation, route}) => {
     searchPlants('');
   }, []);
 
-  const debouncedSearch = useCallback(
+  let debouncedSearch;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  debouncedSearch = useCallback(
     debounce(query => {
       const filtered = plants.filter(plant =>
         plant.name.toLowerCase().includes(query.toLowerCase()),
@@ -98,7 +97,6 @@ const AddPlantScreen = ({navigation, route}) => {
   const pickImage = () => {
     launchImageLibrary({mediaType: 'photo', includeBase64: true}, response => {
       if (response.didCancel) {
-        return;
       } else if (response.errorCode) {
         Alert.alert('Ошибка', 'Ошибка выбора изображения');
       } else {
@@ -110,53 +108,66 @@ const AddPlantScreen = ({navigation, route}) => {
   const handleSelectPlant = selectedPlant => {
     setPlant(selectedPlant);
     setSearchQuery(selectedPlant.name);
+    setFilteredPlants([]);
   };
 
+  const renderItem = ({item}) => (
+    <TouchableOpacity
+      style={styles.plantItem}
+      onPress={() => handleSelectPlant(item)}>
+      <Text style={styles.plantText}>{item.name}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={styles.formContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Поиск растения"
-          value={searchQuery}
-          onChangeText={handleSearchChange}
-        />
-        <FlatList
-          data={filteredPlants}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({item}) => (
-            <TouchableOpacity
-              style={styles.plantItem}
-              onPress={() => handleSelectPlant(item)}>
-              <Text>{item.name}</Text>
-            </TouchableOpacity>
-          )}
-          style={styles.plantList}
-        />
-      </View>
+    <FlatList
+      showsVerticalScrollIndicator={false}
+      ListHeaderComponent={
+        <>
+          <View style={styles.mainContent}>
+            <View style={styles.formContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Поиск растения"
+                value={searchQuery}
+                onChangeText={handleSearchChange}
+              />
+              <FlatList
+                data={filteredPlants}
+                keyExtractor={item => item.id.toString()}
+                renderItem={renderItem}
+                showsVerticalScrollIndicator={false}
+                style={styles.plantList}
+              />
+            </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <TouchableOpacity style={styles.transparentButton} onPress={pickImage}>
-          <Text style={styles.buttonText}>Выбрать изображение</Text>
-        </TouchableOpacity>
+            <View style={styles.fixedButtons}>
+              <TouchableOpacity
+                style={styles.transparentButton}
+                onPress={pickImage}>
+                <Text style={styles.buttonText}>Выбрать изображение</Text>
+              </TouchableOpacity>
 
-        {plantImage && (
-          <Image
-            source={{uri: `data:image/jpeg;base64,${plantImage}`}}
-            style={styles.imagePreview}
-          />
-        )}
+              {plantImage && (
+                <Image
+                  source={{uri: `data:image/jpeg;base64,${plantImage}`}}
+                  style={styles.imagePreview}
+                />
+              )}
 
-        <TouchableOpacity
-          style={styles.transparentButton}
-          onPress={addPlant}
-          disabled={isSubmitEnabled}>
-          <Text style={styles.buttonText}>Сохранить</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+              <TouchableOpacity
+                style={styles.transparentButton}
+                onPress={addPlant}
+                disabled={isSubmitEnabled}>
+                <Text style={styles.buttonText}>Сохранить</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </>
+      }
+      keyExtractor={(item, index) => index.toString()}
+      contentContainerStyle={{flexGrow: 1}}
+    />
   );
 };
 
@@ -164,27 +175,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'flex-start',
+  },
+  mainContent: {
+    flex: 1,
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
   },
   formContainer: {
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    flex: 1,
     paddingTop: 20,
     paddingBottom: 20,
-    flex: 1,
-  },
-  scrollContainer: {
-    paddingBottom: 20,
+    width: '100%',
     alignItems: 'center',
-    justifyContent: 'flex-end',
   },
   input: {
     height: 60,
-    width: 300,
+    width: '90%',
     borderColor: '#ccc',
     borderWidth: 1,
     paddingHorizontal: 10,
-    borderRadius: 30,
+    borderRadius: 10,
     backgroundColor: '#fff',
     paddingLeft: 20,
   },
@@ -196,26 +206,29 @@ const styles = StyleSheet.create({
   },
   plantItem: {
     height: 60,
-    width: 300,
-    paddingTop: 20,
-    borderRadius: 30,
-    flex: 1,
+    width: '90%',
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     paddingLeft: 20,
     borderColor: '#ccc',
-    backgroundColor: '#f9f9f9f9',
+    backgroundColor: '#f9f9f9',
+    justifyContent: 'flex-start',
+    paddingRight: 20,
   },
   plantList: {
-    maxHeight: 250,
-    marginBottom: 20,
-    width: 300,
+    maxHeight: 400,
+    height: 400,
+    width: '100%',
+    alignItems: 'center',
   },
   transparentButton: {
     backgroundColor: 'rgba(53,77,18, 0.6)',
     color: '#fff',
     marginBottom: 15,
-    borderRadius: 30,
-    width: 300,
+    borderRadius: 10,
+    width: '90%',
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
@@ -225,6 +238,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     textAlign: 'center',
+  },
+  fixedButtons: {
+    paddingBottom: 20,
+    width: '100%',
+    alignItems: 'center',
+  },
+  plantText: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
+    paddingLeft: 10,
   },
 });
 

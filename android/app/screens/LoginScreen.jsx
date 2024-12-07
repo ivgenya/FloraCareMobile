@@ -73,7 +73,6 @@ const LoginScreen = ({navigation}) => {
     }
     try {
       await login(email, password);
-      Alert.alert('Успех', 'Вы успешно зарегистрировались!');
       navigation.navigate('Home');
     } catch (error) {
       Alert.alert('Ошибка', error.message || 'Не удалось зарегистрироваться.');
@@ -150,7 +149,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 20,
     paddingHorizontal: 10,
-    borderRadius: 30,
+    borderRadius: 10,
     backgroundColor: '#fff',
     paddingLeft: 20,
   },
@@ -158,7 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(53,77,18, 0.6)',
     color: '#fff',
     marginBottom: 15,
-    borderRadius: 30,
+    borderRadius: 10,
     width: 300,
     height: 60,
     justifyContent: 'center',
@@ -179,7 +178,7 @@ const styles = StyleSheet.create({
     width: 300,
   },
   googleButton: {
-    borderRadius: 30,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ccc',
   },

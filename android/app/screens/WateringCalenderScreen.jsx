@@ -1,7 +1,15 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, FlatList, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 import {fetchWateringSchedule, markWatering} from '../api/calendarQueries';
+import {useFocusEffect} from '@react-navigation/native';
 
 LocaleConfig.locales.ru = {
   monthNames: [
@@ -61,6 +69,12 @@ const WateringCalendarScreen = () => {
     setMarkedDates(schedule);
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      loadSchedule();
+    }, []),
+  );
+
   const handleDayPress = day => {
     const dateInfo = markedDates[day.dateString];
     setSelectedDate(day.dateString);
@@ -92,7 +106,6 @@ const WateringCalendarScreen = () => {
       await loadSchedule();
     } catch (error) {
       console.error('Ошибка при отметке полива:', error);
-      alert('Ошибка при отметке полива');
     }
   };
 
@@ -107,67 +120,77 @@ const WateringCalendarScreen = () => {
     }
     return {
       selected: true,
-      selectedColor: 'blue',
+      selectedColor: '#5fbbff',
       selectedTextColor: 'white',
     };
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Календарь полива</Text>
-      <Calendar
-        markingType={'custom'}
-        markedDates={Object.keys(markedDates).reduce((acc, date) => {
-          acc[date] = getMarkedDateStyle(date);
-          return acc;
-        }, {})}
-        onDayPress={handleDayPress}
-        locale={'ru'}
-        firstDay={1}
-      />
+    <ImageBackground
+      source={require('../assets/img/bg_flora.png')}
+      style={styles.background}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Календарь полива</Text>
+        <Calendar
+          markingType={'custom'}
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          }}
+          markedDates={Object.keys(markedDates).reduce((acc, date) => {
+            acc[date] = getMarkedDateStyle(date);
+            return acc;
+          }, {})}
+          onDayPress={handleDayPress}
+          locale={'ru'}
+          firstDay={0}
+        />
 
-      <View style={styles.listContainer}>
-        <Text style={styles.listTitle}>
-          {selectedDate
-            ? `Растения для полива на ${selectedDate}:`
-            : 'Выберите дату для полива'}
-        </Text>
-
-        {plantsForSelectedDate.length > 0 ? (
-          <FlatList
-            data={plantsForSelectedDate}
-            keyExtractor={(item, index) => `${item}-${index}`}
-            renderItem={({item}) => (
-              <Text style={styles.plantItem}>{item}</Text>
-            )}
-          />
-        ) : (
-          <Text style={styles.noPlantsText}>
-            {selectedDate && markedDates[selectedDate]?.isWatered
-              ? 'Полив уже был отмечен'
-              : 'Нет растений для полива'}
+        <View style={styles.listContainer}>
+          <Text style={styles.listTitle}>
+            {selectedDate
+              ? `Растения для полива на ${selectedDate}:`
+              : 'Выберите дату для полива'}
           </Text>
+
+          {plantsForSelectedDate.length > 0 ? (
+            <FlatList
+              data={plantsForSelectedDate}
+              keyExtractor={(item, index) => `${item}-${index}`}
+              renderItem={({item}) => (
+                <Text style={styles.plantItem}>{item}</Text>
+              )}
+            />
+          ) : (
+            <Text style={styles.noPlantsText}>
+              {selectedDate && markedDates[selectedDate]?.isWatered
+                ? 'Полив уже был отмечен'
+                : 'Нет растений для полива'}
+            </Text>
+          )}
+        </View>
+
+        {showWateringButton && !markedDates[selectedDate]?.isWatered && (
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.transparentButton}
+              onPress={handleMarkWatering}>
+              <Text style={styles.buttonText}>Отметить полив</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
-
-      {showWateringButton && !markedDates[selectedDate]?.isWatered && (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.transparentButton}
-            onPress={handleMarkWatering}>
-            <Text style={styles.buttonText}>Отметить полив</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'transparent',
   },
   title: {
     fontSize: 20,
@@ -180,7 +203,6 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#ffffff',
     borderRadius: 8,
-    elevation: 3,
   },
   listTitle: {
     fontSize: 16,
@@ -200,12 +222,13 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 20,
+    alignItems: 'center',
   },
   transparentButton: {
-    backgroundColor: 'rgba(53,77,18, 0.6)',
+    backgroundColor: '#869471',
     color: '#fff',
     marginBottom: 15,
-    borderRadius: 30,
+    borderRadius: 10,
     width: 300,
     height: 60,
     justifyContent: 'center',
