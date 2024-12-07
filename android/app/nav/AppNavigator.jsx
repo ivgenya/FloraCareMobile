@@ -13,16 +13,18 @@ import AddPlantScreen from '../screens/AddPlantScreen';
 import WateringCalenderScreen from '../screens/WateringCalenderScreen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DocumentationDrawer from '../screens/DocumentationDrawer';
+import BluetoothScanScreen from '../screens/BluetoothScanScreen';
+import PlantDetailsScreen from '../screens/PlantDetailsScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function HomeTabs({navigation}) {
+function HomeTabs() {
   return (
     <Tab.Navigator
       initialRouteName="Мой дом"
       screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
+        tabBarIcon: ({focused, color}) => {
           let iconName;
           if (route.name === 'Календарь') {
             iconName = focused ? 'calendar-month' : 'calendar-month-outline';
@@ -35,7 +37,7 @@ function HomeTabs({navigation}) {
             <MaterialCommunityIcons name={iconName} size={30} color={color} />
           );
         },
-        tabBarActiveTintColor: 'green',
+        tabBarActiveTintColor: 'rgba(53,77,18, 0.6)',
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
           elevation: 0,
@@ -78,7 +80,13 @@ function HomeTabs({navigation}) {
 function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Вход">
+      <Stack.Navigator
+        initialRouteName="Вход"
+        screenOptions={{
+          cardStyle: {
+            backgroundColor: '#fff',
+          },
+        }}>
         <Stack.Screen
           name="Вход"
           component={MainScreen}
@@ -112,6 +120,7 @@ function AppNavigator() {
             headerShown: true,
           })}
         />
+        <Stack.Screen name="Поиск устройств" component={BluetoothScanScreen} />
         <Stack.Screen
           name="AddPlantScreen"
           component={AddPlantScreen}
@@ -121,6 +130,14 @@ function AppNavigator() {
           name="Документация"
           component={DocumentationDrawer}
           options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="PlantDetailsScreen"
+          component={PlantDetailsScreen}
+          options={({route}) => ({
+            title: route.params?.plantName || 'Растение',
+            headerShown: true,
+          })}
         />
       </Stack.Navigator>
     </NavigationContainer>
