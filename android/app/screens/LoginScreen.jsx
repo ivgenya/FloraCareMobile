@@ -15,7 +15,9 @@ import {
 } from '@react-native-google-signin/google-signin';
 import {login, sendTokenToServer} from '../api/authQueries';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {CLIENT_ID} from '../utils/constants';
+import Config from 'react-native-config';
+
+const googleClientId = Config.GOOGLE_CLIENT_ID;
 
 const LoginScreen = ({navigation}) => {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -28,8 +30,7 @@ const LoginScreen = ({navigation}) => {
     });
 
     GoogleSignin.configure({
-      webClientId: CLIENT_ID,
-      offlineAccess: true,
+      webClientId: googleClientId,
     });
   }, [navigation]);
 
