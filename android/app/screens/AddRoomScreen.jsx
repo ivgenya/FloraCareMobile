@@ -25,7 +25,7 @@ const AddRoomScreen = ({navigation}) => {
       return;
     }
     try {
-      await addRoom(roomName, roomImage);
+      await addRoom(roomName, roomImage, navigation);
       navigation.goBack();
     } catch (error) {
       Alert.alert('Ошибка', error.message);

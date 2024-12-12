@@ -15,6 +15,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import DocumentationDrawer from '../screens/DocumentationDrawer';
 import BluetoothScanScreen from '../screens/BluetoothScanScreen';
 import PlantDetailsScreen from '../screens/PlantDetailsScreen';
+import {NavigationProvider} from './NavigationContext';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -80,66 +81,71 @@ function HomeTabs() {
 function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Вход"
-        screenOptions={{
-          cardStyle: {
-            backgroundColor: '#fff',
-          },
-        }}>
-        <Stack.Screen
-          name="Вход"
-          component={MainScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="EmailLoginPage"
-          component={LoginScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="RegistrationPage"
-          component={RegistrationScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Home"
-          component={HomeTabs}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="AddRoomScreen"
-          component={AddRoomScreen}
-          options={{title: 'Создать комнату'}}
-        />
-        <Stack.Screen
-          name="ViewRoomScreen"
-          component={ViewRoomScreen}
-          options={({route}) => ({
-            title: route.params?.roomName || 'Комната',
-            headerShown: true,
-          })}
-        />
-        <Stack.Screen name="Поиск устройств" component={BluetoothScanScreen} />
-        <Stack.Screen
-          name="AddPlantScreen"
-          component={AddPlantScreen}
-          options={{title: 'Добавить растение'}}
-        />
-        <Stack.Screen
-          name="Документация"
-          component={DocumentationDrawer}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="PlantDetailsScreen"
-          component={PlantDetailsScreen}
-          options={({route}) => ({
-            title: route.params?.plantName || 'Растение',
-            headerShown: true,
-          })}
-        />
-      </Stack.Navigator>
+      <NavigationProvider>
+        <Stack.Navigator
+          initialRouteName="Вход"
+          screenOptions={{
+            cardStyle: {
+              backgroundColor: '#fff',
+            },
+          }}>
+          <Stack.Screen
+            name="Вход"
+            component={MainScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="EmailLoginPage"
+            component={LoginScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="RegistrationPage"
+            component={RegistrationScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Home"
+            component={HomeTabs}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="AddRoomScreen"
+            component={AddRoomScreen}
+            options={{title: 'Создать комнату'}}
+          />
+          <Stack.Screen
+            name="ViewRoomScreen"
+            component={ViewRoomScreen}
+            options={({route}) => ({
+              title: route.params?.roomName || 'Комната',
+              headerShown: true,
+            })}
+          />
+          <Stack.Screen
+            name="Поиск устройств"
+            component={BluetoothScanScreen}
+          />
+          <Stack.Screen
+            name="AddPlantScreen"
+            component={AddPlantScreen}
+            options={{title: 'Добавить растение'}}
+          />
+          <Stack.Screen
+            name="Документация"
+            component={DocumentationDrawer}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="PlantDetailsScreen"
+            component={PlantDetailsScreen}
+            options={({route}) => ({
+              title: route.params?.plantName || 'Растение',
+              headerShown: true,
+            })}
+          />
+        </Stack.Navigator>
+      </NavigationProvider>
     </NavigationContainer>
   );
 }

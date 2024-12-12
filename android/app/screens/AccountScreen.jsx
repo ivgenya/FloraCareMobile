@@ -21,7 +21,7 @@ const AccountScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
-    const user = await fetchUserInfo();
+    const user = await fetchUserInfo(navigation);
     setUserInfo(user);
     setLoading(false);
   };

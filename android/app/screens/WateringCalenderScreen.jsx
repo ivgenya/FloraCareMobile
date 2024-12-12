@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 import {fetchWateringSchedule, markWatering} from '../api/calendarQueries';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
 LocaleConfig.locales.ru = {
   monthNames: [
@@ -59,13 +59,14 @@ const WateringCalendarScreen = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [plantsForSelectedDate, setPlantsForSelectedDate] = useState([]);
   const [showWateringButton, setShowWateringButton] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     loadSchedule();
   }, []);
 
   const loadSchedule = async () => {
-    const schedule = await fetchWateringSchedule();
+    const schedule = await fetchWateringSchedule(navigation);
     setMarkedDates(schedule);
   };
 
@@ -92,7 +93,7 @@ const WateringCalendarScreen = () => {
 
   const handleMarkWatering = async () => {
     try {
-      await markWatering(selectedDate);
+      await markWatering(selectedDate, navigation);
       setMarkedDates(prevMarkedDates => ({
         ...prevMarkedDates,
         [selectedDate]: {

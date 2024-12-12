@@ -21,7 +21,7 @@ const RegistrationScreen = ({navigation}) => {
       return;
     }
     try {
-      await register(username, email, password);
+      await register(username, email, password, navigation);
       Alert.alert('Успех', 'Вы успешно зарегистрировались!');
       navigation.navigate('Home');
     } catch (error) {

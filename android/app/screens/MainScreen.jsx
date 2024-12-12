@@ -13,9 +13,10 @@ import Config from 'react-native-config';
 const googleClientId = Config.GOOGLE_CLIENT_ID;
 
 const MainScreen = ({navigation}) => {
+  const token = AsyncStorage.getItem('authToken');
+  const googleToken = AsyncStorage.getItem('googleToken');
+
   const getSignedIn = async () => {
-    const token = await AsyncStorage.getItem('authToken');
-    const googleToken = await AsyncStorage.getItem('googleToken');
     return token || googleToken;
   };
 
@@ -31,7 +32,7 @@ const MainScreen = ({navigation}) => {
     const checkSignedIn = async () => {
       try {
         const isAuthenticated = await getSignedIn();
-        if (isAuthenticated) {
+        if (isAuthenticated && token) {
           navigation.replace('Home');
         }
       } catch (error) {

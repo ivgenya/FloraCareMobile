@@ -65,7 +65,7 @@ const ViewRoomScreen = () => {
   const refetchRoomDetails = async () => {
     try {
       setLoading(true);
-      const details = await fetchRoomDetails(roomId);
+      const details = await fetchRoomDetails(roomId, navigation);
       setRoomDetails(details);
       setNewRoomName(details?.name || '');
       if (details?.name) {
@@ -137,8 +137,8 @@ const ViewRoomScreen = () => {
   };
 
   const handleDeleteDevice = async () => {
-    await deleteDevice(roomId, roomDetails.devices[0].id);
-    await fetchRoomDetails(roomId);
+    await deleteDevice(roomId, roomDetails.devices[0].id, navigation);
+    await refetchRoomDetails();
   };
 
   const DeviceSection = () => {
@@ -205,7 +205,7 @@ const ViewRoomScreen = () => {
           text: 'Удалить',
           onPress: async () => {
             try {
-              await deletePlant(plantId);
+              await deletePlant(plantId, navigation);
               setRoomDetails(prevState => ({
                 ...prevState,
                 plants: prevState.plants.filter(plant => plant.id !== plantId),
@@ -271,7 +271,7 @@ const ViewRoomScreen = () => {
       return;
     }
     try {
-      await updateRoomName(roomId, name);
+      await updateRoomName(roomId, name, navigation);
       setRoomDetails(prevState => ({...prevState, name: name}));
       setIsEditingName(false);
     } catch (error) {

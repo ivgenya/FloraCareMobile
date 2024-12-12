@@ -23,10 +23,8 @@ const HomeScreen = () => {
   const getRooms = async () => {
     setLoading(true);
     try {
-      const userRooms = await fetchUserRooms();
+      const userRooms = await fetchUserRooms(navigation);
       setRooms(userRooms);
-    } catch (error) {
-      console.error('Ошибка загрузки комнат:', error);
     } finally {
       setLoading(false);
     }
@@ -51,7 +49,7 @@ const HomeScreen = () => {
           text: 'Удалить',
           onPress: async () => {
             try {
-              await deleteRoom(roomId);
+              await deleteRoom(roomId, navigation);
               setRooms(rooms.filter(room => room.id !== roomId));
             } catch (error) {
               console.error('Ошибка удаления комнаты:', error);
@@ -120,7 +118,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 10,
+    paddingVertical: 10,
+    paddingLeft: 20,
     backgroundColor: 'transparent',
   },
   list: {

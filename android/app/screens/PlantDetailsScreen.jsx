@@ -29,7 +29,7 @@ const PlantDetailsScreen = () => {
     const fetchDetails = async () => {
       try {
         setLoading(true);
-        const details = await fetchPlantDetails(plantId);
+        const details = await fetchPlantDetails(plantId, navigation);
         setPlantDetails(details);
         if (details?.name) {
           navigation.setOptions({
@@ -65,8 +65,8 @@ const PlantDetailsScreen = () => {
     if (imageUriToUpload) {
       setIsUploading(true);
       try {
-        await addPlantPhoto(plantId, imageUriToUpload);
-        const updatedDetails = await fetchPlantDetails(plantId);
+        await addPlantPhoto(plantId, imageUriToUpload, navigation);
+        const updatedDetails = await fetchPlantDetails(plantId, navigation);
         setPlantDetails(updatedDetails);
       } catch (error) {
       } finally {

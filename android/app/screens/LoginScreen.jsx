@@ -38,7 +38,7 @@ const LoginScreen = ({navigation}) => {
     try {
       await GoogleSignin.hasPlayServices();
       const user = await GoogleSignin.signIn();
-      const isVerified = await sendTokenToServer(user.data.idToken);
+      const isVerified = await sendTokenToServer(user.data.idToken, navigation);
       if (isVerified) {
         setIsSignedIn(true);
         await AsyncStorage.setItem('user', JSON.stringify(user));
@@ -73,7 +73,7 @@ const LoginScreen = ({navigation}) => {
       return;
     }
     try {
-      await login(email, password);
+      await login(email, password, navigation);
       navigation.navigate('Home');
     } catch (error) {
       Alert.alert('Ошибка', error.message || 'Не удалось зарегистрироваться.');

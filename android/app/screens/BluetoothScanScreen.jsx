@@ -26,8 +26,8 @@ const BluetoothScanScreen = ({navigation, route}) => {
 
   const selectDevice = async device => {
     try {
-      await linkDeviceToRoom(roomId, device.id, device.name);
-      navigation.replace('ViewRoomScreen', {roomId});
+      await linkDeviceToRoom(roomId, device.id, device.name, navigation);
+      navigation.goBack();
     } catch (error) {
       console.error('Error linking device to room:', error);
     }

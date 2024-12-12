@@ -85,7 +85,7 @@ const AddPlantScreen = ({navigation, route}) => {
     };
 
     try {
-      await createPlant(plantData);
+      await createPlant(plantData, navigation);
       navigation.goBack();
     } catch (error) {
       Alert.alert('Ошибка', error.message);
