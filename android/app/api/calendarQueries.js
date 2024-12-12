@@ -1,12 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BASE_URL} from '../utils/constants';
 import {Alert} from 'react-native';
+import {handleErrors} from './queryUtils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const fetchWateringSchedule = async () => {
+export const fetchWateringSchedule = async navigation => {
   try {
     const token = await AsyncStorage.getItem('authToken');
-    if (token === null) {
-      throw new Error('Token not found');
+    if (!token) {
+      navigation.replace('Вход');
     }
 
     const response = await fetch(BASE_URL + '/plant/watering-schedule', {
@@ -14,9 +15,7 @@ export const fetchWateringSchedule = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    await handleErrors(response, navigation);
     const data = await response.json();
     const formattedDates = {};
     for (const [date, plants] of Object.entries(data)) {
@@ -37,16 +36,21 @@ export const fetchWateringSchedule = async () => {
     }
     return formattedDates;
   } catch (error) {
-    console.error('Error fetching watering schedule:', error);
+    Alert.alert('Ошибка', `Не удалось загрузить расписание: ${error.message}`);
     return {};
   }
 };
 
-export const markWatering = async date => {
+export const markWatering = async (date, navigation) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
-    if (token === null) {
-      throw new Error('Token not found');
+    if (!token) {
+      navigation.replace('Вход');
+    }
+
+    if (!date) {
+      Alert.alert('Ошибка', 'Дата не указана.');
+      throw new Error('Date is required.');
     }
 
     const response = await fetch(BASE_URL + '/plant/mark-watering', {
@@ -55,15 +59,11 @@ export const markWatering = async date => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({date: date}),
+      body: JSON.stringify({date}),
     });
-
-    if (response.ok) {
-      Alert.alert('Отметка полива', 'Полив успешно отмечен');
-    } else {
-      Alert.alert('Ошибка', 'Пожалуйста, заполните все поля');
-    }
+    await handleErrors(response, navigation);
+    Alert.alert('Полив успешно отмечен.');
   } catch (error) {
-    console.error(error);
+    Alert.alert('Ошибка', `Не удалось отметить полив: ${error.message}`);
   }
 };

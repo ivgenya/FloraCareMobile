@@ -1,12 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BASE_URL} from '../utils/constants';
+import {handleErrors} from './queryUtils';
+import {Alert} from 'react-native';
 
-export const createPlant = async plantData => {
+export const createPlant = async (plantData, navigation) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     if (!token) {
-      throw new Error('Token not found');
+      navigation.replace('Вход');
     }
+
     const response = await fetch(BASE_URL + '/plant/add', {
       method: 'POST',
       headers: {
@@ -15,43 +18,42 @@ export const createPlant = async plantData => {
       },
       body: JSON.stringify(plantData),
     });
-
-    if (!response.ok) {
-      throw new Error('Не удалось добавить растение');
-    }
+    await handleErrors(response, navigation);
+    return await response.json();
   } catch (error) {
+    Alert.alert('Ошибка', error.message);
     throw error;
   }
 };
 
-export const fetchPlantDetails = async plantId => {
+export const fetchPlantDetails = async (plantId, navigation) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     if (!token) {
-      throw new Error('Token not found');
+      navigation.replace('Вход');
     }
+
     const response = await fetch(BASE_URL + `/plant/${plantId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
-    if (!response.ok) {
-      throw new Error('Не удалось получить данные о растении');
-    }
-    const data = await response.json();
-    return data;
+    await handleErrors(response, navigation);
+    return await response.json();
   } catch (error) {
-    throw new Error('Ошибка при получении данных: ' + error.message);
+    Alert.alert('Ошибка', `Не удалось получить данные: ${error.message}`);
+    throw error;
   }
 };
 
-export const addPlantPhoto = async (plantId, imageUri) => {
+export const addPlantPhoto = async (plantId, imageUri, navigation) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     if (!token) {
-      throw new Error('Token not found');
+      navigation.replace('Вход');
     }
+
     const response = await fetch(BASE_URL + '/plant/add-photo', {
       method: 'POST',
       headers: {
@@ -63,22 +65,21 @@ export const addPlantPhoto = async (plantId, imageUri) => {
         image: imageUri,
       }),
     });
-    if (!response.ok) {
-      throw new Error('Ошибка при добавлении фото');
-    }
-    const data = await response.json();
-    return data;
+    await handleErrors(response, navigation);
+    return await response.json();
   } catch (error) {
-    throw new Error('Ошибка при добавлении фото: ' + error.message);
+    Alert.alert('Ошибка', `Не удалось добавить фото: ${error.message}`);
+    throw error;
   }
 };
 
-export const deletePlant = async plantId => {
+export const deletePlant = async (plantId, navigation) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     if (!token) {
-      throw new Error('Token not found');
+      navigation.replace('Вход');
     }
+
     const response = await fetch(BASE_URL + `/plant/${plantId}`, {
       method: 'DELETE',
       headers: {
@@ -86,10 +87,10 @@ export const deletePlant = async plantId => {
         'Content-Type': 'application/json',
       },
     });
-
-    return response.data;
+    await handleErrors(response, navigation);
+    return response;
   } catch (error) {
-    console.error('Error deleting plant:', error);
+    Alert.alert('Ошибка', `Не удалось удалить растение: ${error.message}`);
     throw error;
   }
 };
